@@ -1,10 +1,24 @@
 from flask import make_response
+from flask import request
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import fields
 
+from api.v1.models import MachineId
 
 endpoint = Namespace("elb")
+
+
+model_machine_id = endpoint.model("MachineId", {
+    "instanceId" : fields.String
+})
+
+model_machine_info = endpoint.model("MachineInfo", {
+    "instanceId" : fields.String,
+    "instanceType" : fields.String,
+    "launchDate" : fields.String
+})
+
 
 @endpoint.route("/<elb_name>")
 @endpoint.doc(params={"elb_name" : "pass the load balancer name"})
@@ -21,12 +35,26 @@ class Elb(Resource):
         response.headers['Content-Type'] = "text/plain"
         return response
 
-    @endpoint.doc(body={"machineId" : "instance identifier"})
+
+    @endpoint.expect(model_machine_id, validate=True)    
     @endpoint.response(201, "instance added")  
     @endpoint.response(400, "wrong data format")
     @endpoint.response(409, "instance already on load balancer")
-    def post(self, elb_name, instance_id):
+    def post(self, elb_name):
         """
         Attach an instance on the load balancer
         """
-        print "CARALHO {}".format(elb_name)
+        data = request.json
+        machine = MachineId()
+        machine.instance_id = data["instanceId"]
+        print "CARALHO {}".format(machine.instance_id)
+        return "ok", 201
+
+    @endpoint.expect(model_machine_id, validate=True)    
+    @endpoint.response(201, "instance removed")  
+    @endpoint.response(400, "wrong data format")
+    @endpoint.response(409, "instance is not on load balancer")
+    def delete(self, elb_name):
+        """
+        Detach an instance from the load balancer
+        """
