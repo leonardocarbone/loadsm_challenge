@@ -1,3 +1,7 @@
-import logging.config
+from flask import Flask
+from api.v1 import webapi
 
-from flask import flask
+app = Flask(__name__)
+webapi.init_app(app)
+
+app.run(debug=True, host='0.0.0.0', port=8080)
