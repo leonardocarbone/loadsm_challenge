@@ -2,15 +2,16 @@ from flask import make_response
 from flask_restplus import Namespace
 from flask_restplus import Resource
  
-healthcheck = Namespace('healthcheck')
+endpoint = Namespace('healthcheck')
 
-@healthcheck.route("/")
+@endpoint.route("/")
+@endpoint.response(200, "the service is up")
 class HealthCheck(Resource):
 
     def get(self):  
         """    
         API health check
-        """     
-        response = make_response("the service is up")
+        """             
+        response = make_response("")
         response.headers['Content-Type'] = "text/plain"
         return response
