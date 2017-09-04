@@ -1,1 +1,3 @@
-flask-restplus (python)
+flask-restplus
+uwsgi
+boto3
