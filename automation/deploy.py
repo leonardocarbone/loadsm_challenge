@@ -13,6 +13,7 @@ LOG_DIRECTORY = "www/{}/logs".format(APP_NAME)
 TMP_DIRECTORY = "www/{}/tmp".format(APP_NAME)
 PID_DIRECTORY = "www/{}/pid".format(APP_NAME)
 SOCKET_DIRECTORY = "www/{}/socket".format(APP_NAME)
+SYSTEMD_DIRECTORY = "/etc/systemd/system"
 
 REPOSITORY = 'https://github.com/leonardocarbone/loadsm_challenge.git'
 REPOSITORY_BRANCH = "master"
@@ -32,24 +33,28 @@ def retrieve_source_code():
     command = "git clone {} --branch {} .".format(REPOSITORY, REPOSITORY_BRANCH)
     
     with cd(TMP_DIRECTORY):
-        run (command)
+        run(command)
     
-    run("mv {}/api/* {}".format(TMP_DIRECTORY, APP_DIRECTORY))
-    
+    run("mv {}/api/* {}".format(TMP_DIRECTORY, APP_DIRECTORY))    
         
 def update_config_files():
     run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
-    #run("mv {}/automation/supervisor.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
+    sudo("mv {}/automation/gunicorn.service {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))
+    sudo("mv {}/automation/gunicorn.socket {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))
+
+def remove_tmp_directory():
+    run("rm -rf {}".format(TMP_DIRECTORY))
 
 def install_dependencies():
     for dependency in DEPENDENCIES:
         sudo("pip install {}".format(dependency))
 
 def stop_app():
-    print "Stopping..."
+    sudo("systemctl stop gunicorn.socket")
 
 def start_app():
-    print "Starting..."
+    sudo("systemctl daemon-reload")
+    sudo("systemctl start gunicorn.socket")
 
 def deploy():
     stop_app()
@@ -57,4 +62,5 @@ def deploy():
     retrieve_source_code()
     update_config_files()
     install_dependencies()
+    remove_tmp_directory()
     start_app()
