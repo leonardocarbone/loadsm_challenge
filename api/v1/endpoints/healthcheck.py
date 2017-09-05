@@ -4,7 +4,7 @@ from flask_restplus import Resource
  
 endpoint = Namespace('healthcheck')
 
-@endpoint.route("/")
+@endpoint.route("/", strict_slashes=False)
 @endpoint.response(200, "the service is up")
 class HealthCheck(Resource):
 
