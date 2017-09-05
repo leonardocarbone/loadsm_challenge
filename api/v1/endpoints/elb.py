@@ -4,7 +4,7 @@ from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import fields
 
-from api.v1.models import MachineId
+from v1.models import MachineId
 
 endpoint = Namespace("elb")
 

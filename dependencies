@@ -1,3 +1,4 @@
 flask-restplus
 gunicorn
 boto3
+fabric
