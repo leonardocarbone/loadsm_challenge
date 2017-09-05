@@ -18,7 +18,7 @@ SYSTEMD_DIRECTORY = "/etc/systemd/system"
 REPOSITORY = 'https://github.com/leonardocarbone/loadsm_challenge.git'
 REPOSITORY_BRANCH = "master"
 
-DEPENDENCIES = ["flask-restplus", "gunicorn", "boto3", "supervisor"]
+DEPENDENCIES = ["flask-restplus", "gunicorn", "boto3"]
 
 def create_directories():            
     directories = [APP_DIRECTORY, LOG_DIRECTORY, TMP_DIRECTORY, PID_DIRECTORY, SOCKET_DIRECTORY]

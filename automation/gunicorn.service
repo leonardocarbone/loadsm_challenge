@@ -9,7 +9,7 @@ User=ec2-user
 Group=ec2-user
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/ec2-user/www/sre_test
-ExecStart=/usr/bin/gunicorn --pid /home/ec2-user/www/sre_test/pid/gunicorn.pid   \
+ExecStart=/usr/bin/gunicorn --pid /home/ec2-user/www/sre_test/pid/gunicorn.pid  -c /home/ec2-user/www/sre_test/gunicorn.conf  \
           --bind unix:/home/ec2-user/www/sre_test/socket/gunicorn.socket app:app
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
