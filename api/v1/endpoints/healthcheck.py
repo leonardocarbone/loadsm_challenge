@@ -12,6 +12,4 @@ class HealthCheck(Resource):
         """    
         API health check
         """             
-        response = make_response("")
-        response.headers['Content-Type'] = "text/plain"
-        return response
+        return "", 200
