@@ -12,6 +12,7 @@ APP_DIRECTORY = "www/{}".format(APP_NAME)
 LOG_DIRECTORY = "www/{}/logs".format(APP_NAME)
 TMP_DIRECTORY = "www/{}/tmp".format(APP_NAME)
 PID_DIRECTORY = "www/{}/pid".format(APP_NAME)
+SOCKET_DIRECTORY = "www/{}/socket".format(APP_NAME)
 
 REPOSITORY = 'https://github.com/leonardocarbone/loadsm_challenge.git'
 REPOSITORY_BRANCH = "master"
@@ -19,7 +20,7 @@ REPOSITORY_BRANCH = "master"
 DEPENDENCIES = ["flask-restplus", "gunicorn", "boto3", "supervisor"]
 
 def create_directories():            
-    directories = [APP_DIRECTORY, LOG_DIRECTORY, TMP_DIRECTORY, PID_DIRECTORY]
+    directories = [APP_DIRECTORY, LOG_DIRECTORY, TMP_DIRECTORY, PID_DIRECTORY, SOCKET_DIRECTORY]
 
     run("rm -rf {}".format(APP_DIRECTORY))
 
@@ -38,17 +39,17 @@ def retrieve_source_code():
         
 def update_config_files():
     run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
-    run("mv {}/automation/supervisor.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
+    #run("mv {}/automation/supervisor.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
 
 def install_dependencies():
     for dependency in DEPENDENCIES:
         sudo("pip install {}".format(dependency))
 
 def stop_app():
-    sudo("supervisorctl stop gunicorn")
+    print "Stopping..."
 
 def start_app():
-    sudo("supervisorctl start gunicorn")
+    print "Starting..."
 
 def deploy():
     stop_app()
