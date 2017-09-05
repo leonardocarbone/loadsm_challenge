@@ -38,18 +38,18 @@ def retrieve_source_code():
         
 def update_config_files():
     run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
-    #run("mv {}/automation/supervisor.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
+    run("mv {}/automation/supervisor.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
 
 def install_dependencies():
     for dependency in DEPENDENCIES:
         sudo("pip install {}".format(dependency))
 
 def stop_app():
-    print "Stopping..."
+    sudo("supervisorctl stop gunicorn")
 
 def start_app():
-    print "Starting..."
-    
+    sudo("supervisorctl start gunicorn")
+
 def deploy():
     stop_app()
     create_directories()
