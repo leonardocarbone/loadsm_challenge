@@ -11,15 +11,15 @@ APP_NAME = "sre_test"
 APP_DIRECTORY = "www/{}".format(APP_NAME)
 LOG_DIRECTORY = "www/{}/logs".format(APP_NAME)
 TMP_DIRECTORY = "www/{}/tmp".format(APP_NAME)
+PID_DIRECTORY = "www/{}/pid".format(APP_NAME)
 
 REPOSITORY = 'https://github.com/leonardocarbone/loadsm_challenge.git'
 REPOSITORY_BRANCH = "master"
 
-DEPENDENCIES = ["flask-restplus", "gunicorn", "boto3"]
-
+DEPENDENCIES = ["flask-restplus", "gunicorn", "boto3", "supervisor"]
 
 def create_directories():            
-    directories = [APP_DIRECTORY, LOG_DIRECTORY, TMP_DIRECTORY]
+    directories = [APP_DIRECTORY, LOG_DIRECTORY, TMP_DIRECTORY, PID_DIRECTORY]
 
     run("rm -rf {}".format(APP_DIRECTORY))
 
@@ -34,7 +34,11 @@ def retrieve_source_code():
         run (command)
     
     run("mv {}/api/* {}".format(TMP_DIRECTORY, APP_DIRECTORY))
+    
         
+def update_config_files():
+    run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
+
 def install_dependencies():
     for dependency in DEPENDENCIES:
         sudo("pip install {}".format(dependency))
@@ -43,4 +47,5 @@ def install_dependencies():
 def deploy():
     create_directories()
     retrieve_source_code()
+    update_config_files()
     install_dependencies()
