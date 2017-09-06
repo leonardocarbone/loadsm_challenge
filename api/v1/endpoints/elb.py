@@ -26,6 +26,11 @@ model_machine_info = endpoint.model("MachineInfo", {
 @endpoint.doc(params={"elb_name" : "pass the load balancer name"})
 class Elb(Resource):
 
+    def new_machine_info(self, instance_info):
+        return MachineInfo(instance_id = instance_info["instance_id"],
+                           instance_type = instance_info["instance_type"],
+                           launch_date = instance_info["launch_time"])
+
     @endpoint.response(200, "machines listed")
     @endpoint.response(404, "the elb does not exist")    
     def get(self, elb_name):  
@@ -38,9 +43,7 @@ class Elb(Resource):
 
         response = []
         for instance in instances:
-            response.append(MachineInfo(instance_id = instance["instance_id"],
-                                        instance_type = instance["instance_type"],
-                                        launch_date = instance["launch_time"]))
+            response.append(new_machine_info(instance))
 
         return marshal(response, model_machine_info), 200
         
@@ -66,3 +69,15 @@ class Elb(Resource):
         """
         Detach an instance from the load balancer
         """
+        try:
+            instance_id = request.json["instanceId"]
+        except:
+            return "", 400
+
+        if not is_instance_attached_to_elb(elb_name, instance_id):
+            return "", 409
+        
+        remove_elb_instance(elb_name, [instance_id])
+        removed_instance = self.new_machine_info(describe_instances([instance_id])[0])
+        
+        return marshal(removed_instance, model_machine_info), 201

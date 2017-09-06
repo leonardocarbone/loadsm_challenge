@@ -25,7 +25,7 @@ def describe_instances(instance_ids):
 def get_elb_attached_instances(elb_name):
     """
     Return all instances attached to the load balancer
-    :param elb_name: Loadb balancer name    
+    :param elb_name: Load balancer name
     """
     try:
         elb_client = boto3.client('elb')
@@ -35,3 +35,32 @@ def get_elb_attached_instances(elb_name):
         return describe_instances(instance_ids)
     except ClientError:
         return []  
+
+def remove_elb_instance(elb_name, instance_ids):
+    """
+    Remove an instance from load balancer
+    :param elb_name: Load balancer name
+    :instance_ids: List of instance ids
+    """    
+    instance_ids = map(lambda id: {"InstanceId":id}, instance_ids)
+
+    elb_client = boto3.client("elb")
+    response = elb_client.deregister_instances_from_load_balancer(LoadBalancerName=elb_name, Instances=instance_ids)
+    remaining_ids  = map(lambda instance: instance["InstanceId"], response["Instances"])
+    
+    return remaining_ids
+
+
+def is_instance_attached_to_elb(elb_name, instance_id):
+    """
+    Check if an instance is attached to ELB
+    :param elb_name: Load balancer name
+    :instance_id: Instance id
+    """
+    attached_instances = get_elb_attached_instances(elb_name)
+    attached_instances = filter(lambda instance: instance["instance_id"] == instance_id, attached_instances)
+
+    if len(attached_instances) == 1:
+        return True
+    else:
+        return False
