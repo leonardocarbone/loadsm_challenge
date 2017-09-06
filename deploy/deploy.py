@@ -32,9 +32,9 @@ def retrieve_source_code():
     run("mv {}/api/* {}".format(TMP_DIRECTORY, APP_DIRECTORY))    
         
 def update_config_files():
-    run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))    
-    sudo("mv {}/automation/gunicorn.service {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))
-    sudo("mv {}/automation/gunicorn.socket {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))    
+    run("mv {}/deploy/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))    
+    sudo("mv {}/deploy/gunicorn.service {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))
+    sudo("mv {}/deploy/gunicorn.socket {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))    
 
 def remove_tmp_directory():
     run("rm -rf {}".format(TMP_DIRECTORY))
