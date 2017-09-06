@@ -51,6 +51,9 @@ def start_app():
     sudo("systemctl daemon-reload")
     sudo("systemctl start gunicorn.socket")
 
+def restart_nginx():
+    sudo("service nginx restart")
+
 def deploy(key_pah):
     env.key_filename = key_pah
     
@@ -61,3 +64,4 @@ def deploy(key_pah):
     install_dependencies()
     remove_tmp_directory()
     start_app()
+    restart_nginx()
