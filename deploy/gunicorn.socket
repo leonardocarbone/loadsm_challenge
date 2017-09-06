@@ -1,0 +1,8 @@
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/home/ec2-user/www/sre_test/socket/gunicorn.socket
+
+[Install]
+WantedBy=sockets.target
