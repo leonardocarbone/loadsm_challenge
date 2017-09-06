@@ -1,5 +1,5 @@
 import unittest
-from aws import *
+from v1.aws import *
 
 class AWSElbRemoveInstance(unittest.TestCase):
 
@@ -33,16 +33,12 @@ class AWSElbAddInstance(unittest.TestCase):
 
     def testAddThreeInstances(self):
         remove_elb_instance(self.elb_name, self.instance_ids)
-        added_instances = add_elb_instance(self.elb_name, self.instance_ids)        
+        added_instances = add_elb_instance(self.elb_name, self.instance_ids)
         self.failIf(len(added_instances) != 3)
     
     def testAddOneInstance(self):        
         added_instances = add_elb_instance(self.elb_name, [self.instance_ids[1]])
         self.failIf(len(added_instances) != 1)
 
-
-def main():
-    unittest.main()
-
 if __name__ == '__main__':
-    main()
+    unittest.main()

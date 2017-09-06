@@ -47,6 +47,7 @@ def stop_app():
     sudo("systemctl stop gunicorn.socket")
 
 def start_app():
+    sudo("setenforce 0")
     sudo("systemctl daemon-reload")
     sudo("systemctl start gunicorn.socket")
 
