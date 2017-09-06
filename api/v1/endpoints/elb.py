@@ -31,9 +31,9 @@ class Elb(Resource):
         """    
         List machines attached to a particular load balancer
         """   
-        running_instances()
+        instances = running_instances()
         # Return 404 when the elb does not exist  
-        response = make_response("", 404)
+        response = make_response(instances, 404)
         response.headers['Content-Type'] = "text/plain"
         return response
 
