@@ -5,6 +5,7 @@ from flask_restplus import Resource
 from flask_restplus import fields
 
 from v1.models import MachineId
+from v1.aws import running_instances
 
 endpoint = Namespace("elb")
 
@@ -30,6 +31,7 @@ class Elb(Resource):
         """    
         List machines attached to a particular load balancer
         """   
+        running_instances()
         # Return 404 when the elb does not exist  
         response = make_response("", 404)
         response.headers['Content-Type'] = "text/plain"
