@@ -3,9 +3,10 @@ from flask import request
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import fields
+from flask_restplus import marshal
 
-from v1.models import MachineId
-from v1.aws import get_elb_attached_instances
+from v1.models import *
+from v1.aws import *
 
 endpoint = Namespace("elb")
 
@@ -15,9 +16,9 @@ model_machine_id = endpoint.model("MachineId", {
 })
 
 model_machine_info = endpoint.model("MachineInfo", {
-    "instanceId" : fields.String,
-    "instanceType" : fields.String,
-    "launchDate" : fields.String
+    "instanceId" : fields.String(attribute="instance_id"),
+    "instanceType" : fields.String(attribute="instance_type"),
+    "launchDate" : fields.String(attribute="launch_date")
 })
 
 
@@ -26,16 +27,23 @@ model_machine_info = endpoint.model("MachineInfo", {
 class Elb(Resource):
 
     @endpoint.response(200, "machines listed")
-    @endpoint.response(404, "the elb does not exist")
+    @endpoint.response(404, "the elb does not exist")    
     def get(self, elb_name):  
         """    
         List machines attached to a particular load balancer
         """   
-        get_elb_attached_instances(elb_name)
+        instances = get_elb_attached_instances(elb_name)
+        if len(instances) == 0:
+            return "", 404
+
+        response = []
+        for instance in instances:
+            response.append(MachineInfo(instance_id = instance["instance_id"],
+                                        instance_type = instance["instance_type"],
+                                        launch_date = instance["launch_time"]))
+
+        return marshal(response, model_machine_info), 200
         
-        return "", 404
-
-
     @endpoint.expect(model_machine_id, validate=True)    
     @endpoint.response(201, "instance added")  
     @endpoint.response(400, "wrong data format")
