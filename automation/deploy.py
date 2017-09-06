@@ -1,11 +1,5 @@
 from fabric.api import *
 
-env.hosts = ["18.221.37.251"]
-env.user = "ec2-user"
-env.remote_admin = "ec2-user"
-env.port = "22"
-env.key_filename = "/home/sre_key"
-
 APP_NAME = "sre_test"
 
 APP_DIRECTORY = "www/{}".format(APP_NAME)
@@ -38,9 +32,9 @@ def retrieve_source_code():
     run("mv {}/api/* {}".format(TMP_DIRECTORY, APP_DIRECTORY))    
         
 def update_config_files():
-    run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))
+    run("mv {}/automation/gunicorn.conf {}".format(TMP_DIRECTORY, APP_DIRECTORY))    
     sudo("mv {}/automation/gunicorn.service {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))
-    sudo("mv {}/automation/gunicorn.socket {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))
+    sudo("mv {}/automation/gunicorn.socket {}".format(TMP_DIRECTORY, SYSTEMD_DIRECTORY))    
 
 def remove_tmp_directory():
     run("rm -rf {}".format(TMP_DIRECTORY))
