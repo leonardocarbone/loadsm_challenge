@@ -55,11 +55,17 @@ class Elb(Resource):
         """
         Attach an instance on the load balancer
         """
-        data = request.json
-        machine = MachineId()
-        machine.instance_id = data["instanceId"]
-        print "CARALHO {}".format(machine.instance_id)
-        return "ok", 201
+        try:
+            instance_id = request.json["instanceId"]
+        except:
+            return "", 400
+
+        if is_instance_attached_to_elb(elb_name, instance_id):
+            return "", 409
+
+        added_instance = add_elb_instance(elb_name, [instance_id])
+        added_instance = self.new_machine_info(describe_instances([instance_id])[0])
+        return marshal(added_instance, model_machine_info), 201
 
     @endpoint.expect(model_machine_id, validate=True)    
     @endpoint.response(201, "instance removed")  

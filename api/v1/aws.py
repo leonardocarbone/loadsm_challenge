@@ -36,12 +36,28 @@ def get_elb_attached_instances(elb_name):
     except ClientError:
         return []  
 
-def remove_elb_instance(elb_name, instance_ids):
+
+def add_elb_instance(elb_name, instance_ids):
     """
-    Remove an instance from load balancer
+    Add instances to load balancer
     :param elb_name: Load balancer name
     :instance_ids: List of instance ids
-    """    
+    """
+    instance_ids = map(lambda id: {"InstanceId":id}, instance_ids)
+
+    elb_client = boto3.client("elb")
+    response = elb_client.register_instances_with_load_balancer(LoadBalancerName=elb_name, Instances=instance_ids)
+    attached_instances = map(lambda instance: instance["InstanceId"], response["Instances"])
+
+    return attached_instances    
+
+
+def remove_elb_instance(elb_name, instance_ids):
+    """
+    Remove instances from load balancer
+    :param elb_name: Load balancer name
+    :instance_ids: List of instance ids
+    """
     instance_ids = map(lambda id: {"InstanceId":id}, instance_ids)
 
     elb_client = boto3.client("elb")
