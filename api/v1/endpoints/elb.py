@@ -43,7 +43,7 @@ class Elb(Resource):
 
         response = []
         for instance in instances:
-            response.append(new_machine_info(instance))
+            response.append(self.new_machine_info(instance))
 
         return marshal(response, model_machine_info), 200
         
