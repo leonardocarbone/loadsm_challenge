@@ -12,4 +12,4 @@ class HealthCheck(Resource):
         """    
         API health check
         """             
-        return "aa", 200
+        return "", 200
